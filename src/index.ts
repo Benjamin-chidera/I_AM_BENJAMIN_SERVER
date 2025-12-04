@@ -24,7 +24,7 @@ app.use(
 );
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
+  res.json({ message: "Server is running fine." });
 });
 
 app.use("/api", router);
