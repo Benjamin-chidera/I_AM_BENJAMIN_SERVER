@@ -4,49 +4,49 @@ import {
   postSocial,
   updateSocial,
   deleteSocial,
-} from "../controller/social.ts";
+} from "../controller/social";
 
 import {
   postResume,
   getResume,
   updateResume,
   deleteResume,
-} from "../controller/resume.ts";
+} from "../controller/resume";
 
 import {
   postAbout,
   getAbout,
   updateAbout,
   // deleteAbout,
-} from "../controller/about.ts";
+} from "../controller/about";
 
 import {
   postProjects,
   getProjects,
   updateProject,
   deleteProject,
-} from "../controller/projects.ts";
+} from "../controller/projects";
 
 import {
   postExperience,
   getExperience,
   updateExperience,
   deleteExperience,
-} from "../controller/experience.ts";
+} from "../controller/experience";
 
 import {
   postSkills,
   getSkills,
   updateSkills,
   deleteSkills,
-} from "../controller/skills.ts";
+} from "../controller/skills";
 
 import {
   postCertification,
   getCertification,
   updateCertification,
   deleteCertification,
-} from "../controller/certifications.ts";
+} from "../controller/certifications";
 
 const router = Router();
 

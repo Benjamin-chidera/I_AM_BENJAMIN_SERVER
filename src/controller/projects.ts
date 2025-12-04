@@ -1,8 +1,8 @@
-import pool from "../lib/connect.ts";
+import pool from "../lib/connect";
 import type { Request, Response } from "express";
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-import { getPublicIdFromUrl } from "../lib/cloudinary_url.ts";
+import { getPublicIdFromUrl } from "../lib/cloudinary_url";
 
 export const postProjects = async (req: Request, res: Response) => {
   const client = await pool.connect();

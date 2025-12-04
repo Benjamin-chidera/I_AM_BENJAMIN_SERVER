@@ -4,7 +4,7 @@ import express from "express";
 import type { Request, Response } from "express";
 import { v2 as cloudinary } from "cloudinary";
 import fileUpload from "express-fileupload";
-import router from "./router/route.ts";
+import router from "./router/route";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

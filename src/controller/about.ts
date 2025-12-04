@@ -1,4 +1,4 @@
-import pool from "../lib/connect.ts";
+import pool from "../lib/connect";
 import type { Request, Response } from "express";
 
 export const postAbout = async (req: Request, res: Response) => {
