@@ -76,61 +76,52 @@ export const getSkills = async (req: Request, res: Response) => {
 
 export const updateSkills = async (req: Request, res: Response) => {
   const client = await pool.connect();
-
   try {
     const { id } = req.params;
     const { skills_name, skills_type } = req.body;
 
-    // 1. Fetch old project
-    const oldProject = await client.query(
+    const old = await client.query(
       "SELECT skills_img FROM skills WHERE id = $1",
       [id]
     );
-
-    if (oldProject.rowCount === 0) {
+    if (old.rowCount === 0)
       return res.status(404).json({ error: "Skill not found" });
-    }
 
-    let newImageUrl = oldProject.rows[0].skill_img;
+    let newImageUrl = old.rows[0].skills_img;
 
-    // 2. If user uploaded new image ➝ replace it
     if (req.files?.image) {
       const imageFile = Array.isArray(req.files.image)
         ? req.files.image[0]
         : req.files.image;
 
-      // Upload new image
-      const skills_img = await cloudinary.uploader.upload(
-        imageFile.tempFilePath,
-        { folder: "projects/skill_images" }
-      );
-      newImageUrl = skills_img.secure_url;
+      const upload = await cloudinary.uploader.upload(imageFile.tempFilePath, {
+        folder: "projects/skill_images",
+      });
+      newImageUrl = upload.secure_url;
 
-      // Delete temp file
-      if (fs.existsSync(imageFile.tempFilePath)) {
+      if (fs.existsSync(imageFile.tempFilePath))
         fs.unlinkSync(imageFile.tempFilePath);
-      }
 
-      // Delete old image from Cloudinary
-      const publicId = getPublicIdFromUrl(oldProject.rows[0].project_image);
-      await cloudinary.uploader.destroy(publicId);
+      const publicId = old.rows[0].skills_img
+        ? getPublicIdFromUrl(old.rows[0].skills_img)
+        : null;
+      if (publicId) await cloudinary.uploader.destroy(publicId);
     }
 
-    // 3. Update DB
     const updateQuery = `
-      UPDATE skills SET skills_name = $1, skills_type = $2, skills_img = $3 WHERE id = $4 RETURNING *`;
-
+      UPDATE skills
+      SET skills_name = $1, skills_type = $2, skills_img = $3
+      WHERE id = $4 RETURNING *`;
     const values = [skills_name, skills_type, newImageUrl, id];
 
     const result = await client.query(updateQuery, values);
-
-    res.status(200).json({
-      success: true,
-      message: "Skills updated successfully",
-      data: result.rows[0],
-    });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Skills updated successfully",
+        data: result.rows[0],
+      });
   } finally {
     client.release();
   }
@@ -138,35 +129,26 @@ export const updateSkills = async (req: Request, res: Response) => {
 
 export const deleteSkills = async (req: Request, res: Response) => {
   const client = await pool.connect();
-
   try {
     const { id } = req.params;
 
-    // Get project to extract image URL
-    const project = await client.query(
+    const skill = await client.query(
       "SELECT skills_img FROM skills WHERE id = $1",
       [id]
     );
-
-    if (project.rowCount === 0) {
+    if (skill.rowCount === 0)
       return res.status(404).json({ error: "Skill not found" });
-    }
 
-    const imageUrl = project.rows[0].skill_img;
+    const imageUrl = skill.rows[0].skills_img;
 
-    // Delete from DB
     await client.query("DELETE FROM skills WHERE id = $1", [id]);
 
-    // Delete image from Cloudinary
-    const publicId = getPublicIdFromUrl(imageUrl);
-    await cloudinary.uploader.destroy(publicId);
+    const publicId = imageUrl ? getPublicIdFromUrl(imageUrl) : null;
+    if (publicId) await cloudinary.uploader.destroy(publicId);
 
-    res.status(200).json({
-      success: true,
-      message: "Skills deleted successfully",
-    });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    res
+      .status(200)
+      .json({ success: true, message: "Skills deleted successfully" });
   } finally {
     client.release();
   }
