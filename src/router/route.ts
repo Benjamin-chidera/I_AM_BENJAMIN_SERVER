@@ -48,12 +48,19 @@ import {
   deleteCertification,
 } from "../controller/certifications";
 
+import {
+  createProfile,
+  getProfile,
+  updateProfile,
+  deleteProfile,
+} from "../controller/profile";
+
 const router = Router();
 
 // this is for resume routes
 router.route("/resume").post(postResume).get(getResume);
 router.route("/resume/:id").patch(updateResume).delete(deleteResume);
- 
+
 // this is for social routes
 router.route("/social").post(postSocial).get(getSocial);
 router.route("/social/:id").patch(updateSocial).delete(deleteSocial);
@@ -62,14 +69,17 @@ router.route("/social/:id").patch(updateSocial).delete(deleteSocial);
 router.route("/about").post(postAbout).get(getAbout);
 router.route("/about/:id").patch(updateAbout);
 // .delete(deleteAbout);
- 
+
 // this is for projects routes
 router.route("/projects").post(postProjects).get(getProjects);
 router.route("/projects/:id").patch(updateProject).delete(deleteProject);
 
 // this is for experience routes
 router.route("/experience").post(postExperience).get(getExperience);
-router.route("/experience/:id").patch(updateExperience).delete(deleteExperience);
+router
+  .route("/experience/:id")
+  .patch(updateExperience)
+  .delete(deleteExperience);
 
 // this is for skills routes
 router.route("/skills").post(postSkills).get(getSkills);
@@ -81,5 +91,9 @@ router
   .route("/certifications/:id")
   .patch(updateCertification)
   .delete(deleteCertification);
+
+// this is for profile routes
+router.route("/profile").post(createProfile).get(getProfile);
+router.route("/profile/:id").patch(updateProfile).delete(deleteProfile);
 
 export default router;
