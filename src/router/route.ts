@@ -49,7 +49,7 @@ import {
 } from "../controller/certifications";
 
 import {
-  createProfile,
+  // createProfile,
   getProfile,
   updateProfile,
   deleteProfile,
@@ -58,8 +58,12 @@ import {
 const router = Router();
 
 // this is for resume routes
-router.route("/resume").post(postResume).get(getResume);
-router.route("/resume/:id").patch(updateResume).delete(deleteResume);
+router
+  .route("/resume")
+  .post(postResume)
+  .get(getResume)
+  .put(updateResume)
+  .delete(deleteResume);
 
 // this is for social routes
 router.route("/social").post(postSocial).get(getSocial);
@@ -93,7 +97,10 @@ router
   .delete(deleteCertification);
 
 // this is for profile routes
-router.route("/profile").post(createProfile).get(getProfile);
-router.route("/profile/:id").patch(updateProfile).delete(deleteProfile);
+router
+  .route("/profile")
+  .put(updateResume)
+  .get(getProfile)
+  .delete(deleteProfile);
 
 export default router;
