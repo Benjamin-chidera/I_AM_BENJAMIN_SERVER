@@ -7,7 +7,7 @@ export const postSocial = async (req: Request, res: Response) => {
     const { platform_name, handle, url } = req.body;
 
     const query =
-      "INSERT INTO social (platform_name, handle, url) values ( $1, $2, $3 ) ";
+      "INSERT INTO social (platform_name, handle, url) VALUES ($1, $2, $3) RETURNING *";
 
     const values = [platform_name, handle, url];
 

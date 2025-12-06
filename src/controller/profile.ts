@@ -91,8 +91,11 @@ export const updateProfile = async (req: Request, res: Response) => {
       "SELECT profile_image FROM profile LIMIT 1"
     );
 
+    console.log(oldProfile);
+    
+
     if (oldProfile.rowCount === 0) {
-      return res.status(404).json({ error: "Profile not found" });
+      return res.status(404).json({ error: "Profile not found" }); 
     }
 
     let newImageUrl = oldProfile.rows[0].profile_image;

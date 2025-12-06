@@ -9,11 +9,13 @@
   },
   "dependencies": {
     "cloudinary": "^2.8.0",
+    "cors": "^2.8.5",
     "express-fileupload": "^1.5.2",
     "mysql2": "^3.15.3",
     "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/express-fileupload": "^1.5.1",
     "@types/node": "^24.10.1",

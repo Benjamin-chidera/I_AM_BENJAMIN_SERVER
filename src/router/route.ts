@@ -49,7 +49,7 @@ import {
 } from "../controller/certifications";
 
 import {
-  // createProfile,
+  createProfile,
   getProfile,
   updateProfile,
   deleteProfile,
@@ -62,7 +62,7 @@ router
   .route("/resume")
   .post(postResume)
   .get(getResume)
-  .put(updateResume)
+  .patch(updateResume)
   .delete(deleteResume);
 
 // this is for social routes
@@ -71,7 +71,7 @@ router.route("/social/:id").patch(updateSocial).delete(deleteSocial);
 
 // this is for about routes
 router.route("/about").post(postAbout).get(getAbout);
-router.route("/about/:id").patch(updateAbout);
+router.route("/about").patch(updateAbout);
 // .delete(deleteAbout);
 
 // this is for projects routes
@@ -99,8 +99,9 @@ router
 // this is for profile routes
 router
   .route("/profile")
-  .put(updateProfile)
-  .get(getProfile)
+  .post(createProfile)
+  .patch(updateProfile)
+  .get(getProfile) 
   .delete(deleteProfile);
 
 export default router;

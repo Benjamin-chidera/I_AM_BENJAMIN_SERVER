@@ -5,12 +5,20 @@ export const postAbout = async (req: Request, res: Response) => {
   const client = await pool.connect();
   try {
     const { about_me } = req.body;
+    if (!about_me)
+      return res.status(400).json({ error: "about_me is required" });
 
-    const query = "INSERT INTO About(about_me) values ( $1 ) ";
+    const existing = await client.query("SELECT id FROM about LIMIT 1");
+    if ((existing.rowCount ?? 0) > 0) {
+      return res
+        .status(409)
+        .json({ error: "About already exists. Use PUT to update it." });
+    }
 
-    const values = [about_me];
-
-    const result = await client.query(query, values);
+    const result = await client.query(
+      "INSERT INTO about (about_me) VALUES ($1) RETURNING *",
+      [about_me]
+    );
 
     res
       .status(201)
@@ -24,11 +32,9 @@ export const postAbout = async (req: Request, res: Response) => {
 
 export const getAbout = async (req: Request, res: Response) => {
   const client = await pool.connect();
-
   try {
-    const result = await client.query("SELECT * FROM about");
-
-    res.json(result.rows);
+    const result = await client.query("SELECT * FROM about LIMIT 1");
+    res.json(result.rows[0] ?? null);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   } finally {
@@ -38,20 +44,41 @@ export const getAbout = async (req: Request, res: Response) => {
 
 export const updateAbout = async (req: Request, res: Response) => {
   const client = await pool.connect();
-
   try {
-    const { id } = req.params;
     const { about_me } = req.body;
+    if (!about_me)
+      return res.status(400).json({ error: "about_me is required" });
 
-    const query = "UPDATE About SET about_me = $1 WHERE id = $2 RETURNING *";
+    const existing = await client.query("SELECT id FROM about LIMIT 1");
+    if ((existing.rowCount ?? 0) === 0) {
+      return res.status(404).json({ error: "About not found" });
+    }
 
-    const values = [about_me, id];
-
-    const result = await client.query(query, values);
+    const result = await client.query(
+      "UPDATE about SET about_me = $1 RETURNING *",
+      [about_me]
+    );
 
     res
       .status(200)
-      .json({ message: "Aboutupdated successfully", data: result.rows[0] });
+      .json({ message: "About updated successfully", data: result.rows[0] });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  } finally {
+    client.release();
+  }
+};
+
+export const deleteAbout = async (req: Request, res: Response) => {
+  const client = await pool.connect();
+  try {
+    const existing = await client.query("SELECT id FROM about LIMIT 1");
+    if (existing.rowCount === 0) {
+      return res.status(404).json({ error: "About not found" });
+    }
+
+    await client.query("DELETE FROM about");
+    res.status(200).json({ message: "About deleted successfully" });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   } finally {
