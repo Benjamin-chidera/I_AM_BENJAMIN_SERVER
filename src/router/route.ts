@@ -99,7 +99,7 @@ router
 // this is for profile routes
 router
   .route("/profile")
-  .put(updateResume)
+  .put(updateProfile)
   .get(getProfile)
   .delete(deleteProfile);
 
